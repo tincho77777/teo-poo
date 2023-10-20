@@ -28,6 +28,7 @@ public class Libro {
 	public Integer getId() {
 		return id;
 	}
+
 	public String getTitulo() {
 		return titulo;
 	}
@@ -40,7 +41,7 @@ public class Libro {
 		return isbn;
 	}
 
-	public void setIsbn(String ejemplares) {
+	public void setIsbn(String isbn) {
 		this.isbn = isbn;
 	}
 

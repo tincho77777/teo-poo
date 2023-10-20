@@ -1,13 +1,19 @@
 package com.esba.biblioteca.exceptions;
 
-public class ConnectionDataBaseException extends Exception{
+import java.sql.SQLException;
+
+public class ConnectionDataBaseException extends SQLException {
 	public ConnectionDataBaseException() {
+	}
+
+	public ConnectionDataBaseException(Exception e) {
 	}
 
 	public ConnectionDataBaseException(String message) {
 		super(message);
 	}
 
-	public ConnectionDataBaseException(Exception e) {
+	public ConnectionDataBaseException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }
