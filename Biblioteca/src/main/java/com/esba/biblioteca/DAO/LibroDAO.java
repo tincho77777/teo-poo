@@ -76,7 +76,7 @@ public class LibroDAO {
 				var isbn = resultSet.getString("isbn");
 				var activo = resultSet.getInt("activo");
 				var disponibilidad = activo != 0;
-				libros.add(new Libro(id, titulo, autor, disponibilidad, isbn));
+				libros.add(new Libro(id, titulo, isbn, disponibilidad, autor));
 			}
 			desconectar();
 			return libros;

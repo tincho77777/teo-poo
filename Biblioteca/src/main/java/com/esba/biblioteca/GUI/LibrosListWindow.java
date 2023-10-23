@@ -14,6 +14,7 @@ public class LibrosListWindow extends JDialog {
 		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		var tableModel = new DefaultTableModel();
+		tableModel.addColumn("ID");
 		tableModel.addColumn("Título");
 		tableModel.addColumn("ISBN");
 		tableModel.addColumn("Autor");
@@ -21,6 +22,7 @@ public class LibrosListWindow extends JDialog {
 
 		for (var libro : libros) {
 			tableModel.addRow(new Object[]{
+					libro.getId(),
 					libro.getTitulo(),
 					libro.getIsbn(),
 					libro.getAutor(),

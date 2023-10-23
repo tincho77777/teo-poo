@@ -10,6 +10,7 @@ import com.esba.biblioteca.exceptions.MenuLibroException;
 import com.esba.biblioteca.exceptions.MenuSalidaException;
 
 import javax.swing.*;
+import java.util.List;
 
 public class BibliotecaApplication {
 
@@ -30,26 +31,23 @@ public class BibliotecaApplication {
 
 		while (!salir) {
 			salir = menuDeOpciones(libroDAO, salir);
-			if (!salir) {
-				salir = menuDeSalida(libroDAO, salir);
-			}
 		}
 	}
 
-	private static boolean menuDeSalida(LibroDAO libroDAO,
-	                                    boolean salir) throws MenuSalidaException {
+	private static boolean menuDeSalida() throws MenuSalidaException {
 		var opcionSalida = Integer.parseInt(JOptionPane.showInputDialog("Desea salir del menu?"
 				+ "\n1.Salir"
 				+ "\n2.Realizar otra acción"
 		));
 
+		boolean salir;
 		try {
 			switch (opcionSalida) {
 				case 1:
 					salir = true;
 					break;
 				case 2:
-					menuDeOpciones(libroDAO, salir);
+					salir = false;
 					break;
 				default:
 					throw new EleccionOpcionSalidaException();
@@ -85,7 +83,7 @@ public class BibliotecaApplication {
 					eliminarLibro(libroDAO);
 					break;
 				case 5:
-					salir = menuDeSalida(libroDAO, salir);
+					salir = menuDeSalida();
 					break;
 				default:
 					throw new EleccionOpcionLibroException();
@@ -103,30 +101,73 @@ public class BibliotecaApplication {
 				true,
 				"J.K.ROWLING"
 		);
-		libroDAO.agregarLibro(libroNuevo);
+
+		try {
+			libroDAO.agregarLibro(libroNuevo);
+			var mensaje = "Libro creado con éxito:\n" +
+					"Título: " + libroNuevo.getTitulo() + "\n" +
+					"ISBN: " + libroNuevo.getIsbn() + "\n" +
+					"Disponibilidad: " + libroNuevo.getDisponible() + "\n" +
+					"Autor: " + libroNuevo.getAutor();
+			JOptionPane.showMessageDialog(null, mensaje);
+		} catch (MenuLibroException e) {
+			JOptionPane.showMessageDialog(null, "Error al crear el libro: " + e.getMessage());
+		}
 	}
 
 	private static void listarLibros(LibroDAO libroDAO) throws Exception {
-		var libros = libroDAO.listarLibros();
-		var frameTemporal = new JFrame();
-		LibrosListWindow.mostrarLibros(frameTemporal, libros);
+		try {
+			mostrarLibros(libroDAO);
+		} catch (MenuLibroException e) {
+			JOptionPane.showMessageDialog(null, "Error al listar los libros: " + e.getMessage());
+		}
+
 	}
 
 	private static void actualizarLibro(LibroDAO libroDAO) throws Exception {
-		var libros = libroDAO.listarLibros();
+		var libros = mostrarLibros(libroDAO);
 
 		var id = Integer.parseInt(JOptionPane.showInputDialog("Seleccione el id del libro a modificar: "));
+
+		if (id < 0 || id >= libros.size()) {
+			JOptionPane.showMessageDialog(null, "ID no válido. Introduce un ID válido.");
+			return;
+		}
 
 		var libroAActualizar = libros.get(id);
 
 		libroAActualizar.setTitulo("Los siete enanitos");
 		libroAActualizar.setAutor("YO");
-		libroDAO.actualizarLibro(libroAActualizar);
+
+		try {
+			libroDAO.actualizarLibro(libroAActualizar);
+			JOptionPane.showMessageDialog(null, "Libro actualizado con éxito.");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Error al actualizar el libro: " + e.getMessage());
+		}
 	}
 
 	private static void eliminarLibro(LibroDAO libroDAO) throws Exception {
-		libroDAO.listarLibros();
+		mostrarLibros(libroDAO);
+
 		var id = Integer.parseInt(JOptionPane.showInputDialog("Seleccione el id del libro a eliminar: "));
-		libroDAO.eliminarLibro(id);
+
+		if (id < 0) {
+			JOptionPane.showMessageDialog(null, "ID no válido. Introduce un ID válido.");
+			return;
+		}
+
+		try {
+			libroDAO.eliminarLibro(id);
+			JOptionPane.showMessageDialog(null, "Libro eliminado con éxito.");
+		} catch (MenuLibroException e) {
+			JOptionPane.showMessageDialog(null, "Error al eliminar el libro: " + e.getMessage());
+		}
+	}
+
+	private static List<Libro> mostrarLibros(LibroDAO libroDAO) throws Exception {
+		var libros = libroDAO.listarLibros();
+		LibrosListWindow.mostrarLibros(null, libros);
+		return libros;
 	}
 }
