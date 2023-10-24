@@ -1,8 +1,8 @@
-package com.esba.biblioteca.DAO;
+package com.esba.biblioteca.dao;
 
-import com.esba.biblioteca.Configuraciones.DataBaseConfig;
+import com.esba.biblioteca.configuraciones.DataBaseConfig;
 import com.esba.biblioteca.entity.Libro;
-import com.esba.biblioteca.exceptions.ConnectionDataBaseException;
+import com.esba.biblioteca.exceptions.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -43,7 +43,7 @@ public class LibroDAO {
 		}
 	}
 
-	public void agregarLibro(Libro libro) throws Exception {
+	public void agregarLibro(Libro libro) throws AltaLibroException, SQLException {
 		var query = "INSERT INTO libros (titulo, autor, isbn, activo) VALUES (?, ?, ?, ?)";
 		try {
 			conectar();
@@ -55,13 +55,13 @@ public class LibroDAO {
 				estado.executeUpdate();
 			}
 		} catch (SQLException e) {
-			throw new ConnectionDataBaseException(e);
+			throw new AltaLibroException(e.getMessage());
 		} finally {
 			desconectar();
 		}
 	}
 
-	public List<Libro> listarLibros() throws Exception {
+	public List<Libro> listarLibros() throws ListarLibrosException, SQLException {
 		var libros = new ArrayList<Libro>();
 		var query = "SELECT * FROM libros ";
 		conectar();
@@ -81,22 +81,22 @@ public class LibroDAO {
 			desconectar();
 			return libros;
 		} catch (Exception e) {
-			throw new Exception();
-			//agregar excepcion
+			throw new ListarLibrosException(e.getMessage());
 		}
 	}
 
-	public void actualizarLibro(Libro libro) throws SQLException {
+	public void actualizarLibro(Libro libro) throws SQLException, ActualizarLibroException {
 		var query = "UPDATE libros SET ";
 		conectar();
-		try (var estado = jdbcConnection.prepareStatement(query)) {
+		try{
+			var estado = jdbcConnection.prepareStatement(query);
 			var valores = new ArrayList<>();
 			validarParametros(libro, query, valores);
 			reemplazarParametrosEnQuery(libro, valores, estado);
 			estado.executeUpdate();
 			desconectar();
 		} catch (Exception e) {
-			//
+			throw new ActualizarLibroException(e.getMessage());
 		}
 	}
 
@@ -111,7 +111,10 @@ public class LibroDAO {
 		estado.setInt(i, libro.getId());
 	}
 
-	private void validarParametros(Libro libro, String query, ArrayList<Object> valores) {
+	private void validarParametros(Libro libro,
+	                                 String query,
+	                                 ArrayList<Object> valores) {
+
 		if (libro.getTitulo() != null && !libro.getTitulo().isEmpty()) {
 			query += "titulo = ?, ";
 			valores.add(libro.getTitulo());
@@ -141,8 +144,7 @@ public class LibroDAO {
 			estado.executeUpdate();
 			desconectar();
 		} catch (Exception e) {
-			//
+			throw new EliminarLibroException(e.getMessage());
 		}
-
 	}
 }

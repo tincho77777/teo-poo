@@ -1,6 +1,6 @@
 package com.esba.biblioteca.exceptions;
 
-import static com.esba.biblioteca.Parametros.Mensajes.ERROR_OPCION_INCORRECTA;
+import static com.esba.biblioteca.parametros.Mensajes.ERROR_OPCION_INCORRECTA;
 
 public class EleccionOpcionSalidaException extends Exception{
 

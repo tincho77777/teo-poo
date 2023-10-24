@@ -1,4 +1,4 @@
-package com.esba.biblioteca.Parametros;
+package com.esba.biblioteca.parametros;
 
 public class Parametros {
 

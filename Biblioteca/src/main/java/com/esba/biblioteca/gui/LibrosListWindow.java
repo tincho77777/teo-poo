@@ -1,4 +1,4 @@
-package com.esba.biblioteca.GUI;
+package com.esba.biblioteca.gui;
 
 import com.esba.biblioteca.entity.Libro;
 

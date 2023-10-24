@@ -1,4 +1,4 @@
-package com.esba.biblioteca.Configuraciones;
+package com.esba.biblioteca.configuraciones;
 
 public class DataBaseConfig {
 

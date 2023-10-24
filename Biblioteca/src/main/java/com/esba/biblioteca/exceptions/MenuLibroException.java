@@ -1,6 +1,6 @@
 package com.esba.biblioteca.exceptions;
 
-import static com.esba.biblioteca.Parametros.Mensajes.ERROR_MENU_LIBRO;
+import static com.esba.biblioteca.parametros.Mensajes.ERROR_MENU_LIBRO;
 
 public class MenuLibroException extends Exception {
 	public MenuLibroException() {
