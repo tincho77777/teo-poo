@@ -86,14 +86,9 @@ public class LibroDAO {
 	}
 
 	public void actualizarLibro(Libro libro) throws SQLException, ActualizarLibroException {
-		var query = "UPDATE libros SET ";
 		conectar();
-		try{
-			var estado = jdbcConnection.prepareStatement(query);
-			var valores = new ArrayList<>();
-			validarParametros(libro, query, valores);
-			reemplazarParametrosEnQuery(libro, valores, estado);
-			estado.executeUpdate();
+		try {
+			validarParametros(libro);
 			desconectar();
 		} catch (Exception e) {
 			throw new ActualizarLibroException(e.getMessage());
@@ -111,29 +106,17 @@ public class LibroDAO {
 		estado.setInt(i, libro.getId());
 	}
 
-	private void validarParametros(Libro libro,
-	                                 String query,
-	                                 ArrayList<Object> valores) {
+	private void validarParametros(Libro libro) throws SQLException {
+		var query = "UPDATE libros SET titulo = ?, autor = ?, isbn = ?, activo = ? WHERE id = ?";
+		var estado = jdbcConnection.prepareStatement(query);
 
-		if (libro.getTitulo() != null && !libro.getTitulo().isEmpty()) {
-			query += "titulo = ?, ";
-			valores.add(libro.getTitulo());
-		}
-		if (libro.getAutor() != null && !libro.getAutor().isEmpty()) {
-			query += "autor = ?, ";
-			valores.add(libro.getAutor());
-		}
-		if (libro.getIsbn() != null && !libro.getIsbn().isEmpty()) {
-			query += "isbn = ?, ";
-			valores.add(libro.getIsbn());
-		}
-		if (libro.getDisponible() != null) {
-			query += "activo = ?, ";
-			valores.add(libro.getDisponible());
-		}
+		estado.setString(1, libro.getTitulo());
+		estado.setString(2, libro.getAutor());
+		estado.setString(3, libro.getIsbn());
+		estado.setBoolean(4, libro.getDisponible());
+		estado.setInt(5, libro.getId());
 
-		// Eliminar la coma final y agregar la condición WHERE
-		query = query.substring(0, query.length() - 2) + " WHERE id = ?";
+		estado.executeUpdate();
 	}
 
 	public void eliminarLibro(Integer idLibro) throws Exception {

@@ -202,20 +202,31 @@ public class BibliotecaApplication {
 
 		if (opcionDeAlta == 1) {
 			var titulo = JOptionPane.showInputDialog("Ingresa el título del libro:");
-			libroAActualizar.setTitulo(titulo);
+			if (titulo != null) {
+				libroAActualizar.setTitulo(titulo);
+			}
 
 			var isbn = JOptionPane.showInputDialog("Ingresa el ISBN del libro:");
-			libroAActualizar.setIsbn(isbn);
+			if (isbn != null && isbn.length() == 13) {
+				libroAActualizar.setIsbn(isbn);
+			}
 
-			var disponible = Boolean.parseBoolean(JOptionPane.showInputDialog("¿El libro está disponible? (true/false):"));
-			libroAActualizar.setDisponible(disponible);
+			var disponibleString = JOptionPane.showInputDialog("¿El libro está disponible? (true/false): ");
+			if (disponibleString != null) {
+				if (disponibleString.equalsIgnoreCase("true") ||
+						disponibleString.equalsIgnoreCase("false")) {
+					var disponible = Boolean.parseBoolean(disponibleString);
+					libroAActualizar.setDisponible(disponible);
+				}
+			}
 
 			var autor = JOptionPane.showInputDialog("Ingresa el nombre del autor:");
-			libroAActualizar.setAutor(autor);
-
+			if (autor != null) {
+				libroAActualizar.setAutor(autor);
+			}
 		} else if (opcionDeAlta == 2) {
 			libroAActualizar.setTitulo("El Resplandor");
-			libroAActualizar.setAutor("Stephen King");
+			libroAActualizar.setAutor("Madonna");
 		} else {
 			JOptionPane.showMessageDialog(null, "La opcion ingresada no es correcta: ");
 		}
