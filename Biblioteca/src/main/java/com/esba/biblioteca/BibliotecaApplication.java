@@ -161,7 +161,6 @@ public class BibliotecaApplication {
 		} catch (MenuLibroException e) {
 			JOptionPane.showMessageDialog(null, "Error al listar los libros: " + e.getMessage());
 		}
-
 	}
 
 	private static void actualizarLibro(LibroDAO libroDAO) throws Exception {
